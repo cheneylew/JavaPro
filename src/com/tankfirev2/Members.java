@@ -175,6 +175,10 @@ class EnemyTank extends Tank implements Runnable
 				int a[]={0,1,3};
 				this.moveDirectionState = Tools.GetNum(a);
 			}
+			if(this.isLivable == false){
+				System.out.println("清除敌人坦克的僵尸进程！");
+				break;
+			}
 		}
 	}
 	public void checkHitTanks(Vector<Tank> tanks){

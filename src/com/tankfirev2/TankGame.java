@@ -55,9 +55,9 @@ class MPanel extends JPanel implements KeyListener,Runnable
 			tr.start();
 		}
 		//×¼±¸×Óµ¯Í¼Æ¬
-		this.image1 = Toolkit.getDefaultToolkit().getImage("bomb_1.gif");
-		this.image2 = Toolkit.getDefaultToolkit().getImage("bomb_2.gif");
-		this.image3 = Toolkit.getDefaultToolkit().getImage("bomb_3.gif");
+		this.image1 = Toolkit.getDefaultToolkit().getImage(Panel.class.getResource("/bomb_1.gif"));
+		this.image2 = Toolkit.getDefaultToolkit().getImage(Panel.class.getResource("/bomb_2.gif"));
+		this.image3 = Toolkit.getDefaultToolkit().getImage(Panel.class.getResource("/bomb_3.gif"));
 	}
 
 	public void paint(Graphics g) {
