@@ -40,6 +40,8 @@ class MPanel extends JPanel implements KeyListener,Runnable
 	Hero hero = null;
 	Vector<EnemyTank> enemyTanks = new Vector<EnemyTank>();
 	int enemySize = 3;
+	Image image1,image2,image3;
+	Vector<Bomb> bombs = new Vector<Bomb>();
 	public MPanel() {
 		super();
 		hero = new Hero(180, 340);
@@ -52,6 +54,10 @@ class MPanel extends JPanel implements KeyListener,Runnable
 			Thread tr = new Thread(oneTank);
 			tr.start();
 		}
+		//准备子弹图片
+		this.image1 = Toolkit.getDefaultToolkit().getImage("bomb_1.gif");
+		this.image2 = Toolkit.getDefaultToolkit().getImage("bomb_2.gif");
+		this.image3 = Toolkit.getDefaultToolkit().getImage("bomb_3.gif");
 	}
 
 	public void paint(Graphics g) {
@@ -78,6 +84,25 @@ class MPanel extends JPanel implements KeyListener,Runnable
 			}
 		}
 		//System.out.println("刷新ing");
+		//画出炮弹
+		for (int i = 0; i < this.bombs.size(); i++) {
+			System.out.println(this.bombs.size());
+			Bomb bomb = this.bombs.get(i);
+			if (bomb.isLive) {
+				if (bomb.life>6) {
+					System.out.println(bomb.isLive);
+					g.drawImage(this.image1, bomb.x, bomb.y, 30, 30, this);
+				}else if (bomb.life>3) {
+					g.drawImage(this.image2, bomb.x, bomb.y, 30, 30, this);
+				}else if (bomb.life>=1) {
+					g.drawImage(this.image3, bomb.x, bomb.y, 30, 30, this);
+				}else{
+					bomb.isLive = false;
+				}
+				bomb.lifeDown();
+			}else this.bombs.remove(bomb);
+			
+		}
 		//在画出敌人坦克之前，判断有没有和其它坦克相碰撞，若是碰撞，则调头
 		this.enemyTankHits();
 		//画出敌人Tank
@@ -168,6 +193,8 @@ class MPanel extends JPanel implements KeyListener,Runnable
 			{
 				shot.setLivable(false);
 				tank.setLivable(false);
+				Bomb bomb = new Bomb(tank.x, tank.y);
+				this.bombs.add(bomb);
 				return true;
 			}
 			break;
@@ -177,6 +204,8 @@ class MPanel extends JPanel implements KeyListener,Runnable
 			{
 				shot.setLivable(false);
 				tank.setLivable(false);
+				Bomb bomb = new Bomb(tank.x, tank.y);
+				this.bombs.add(bomb);
 				return true;
 			}
 			break;
