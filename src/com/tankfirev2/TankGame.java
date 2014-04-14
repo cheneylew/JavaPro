@@ -38,6 +38,7 @@ public class TankGame extends JFrame {
 class MPanel extends JPanel implements KeyListener,Runnable
 {
 	Hero hero = null;
+	int repaintTimes = 0;
 	Vector<EnemyTank> enemyTanks = new Vector<EnemyTank>();
 	int enemySize = 3;
 	Image image1,image2,image3;
@@ -65,8 +66,18 @@ class MPanel extends JPanel implements KeyListener,Runnable
 		super.paint(g);
 		//判断敌人的坦克和我的坦克是否想碰
 		
-		//画出我的Tank
-		this.drawTank(hero.getX(), hero.getY(), g, hero.getDirection(),1 );
+		//画出我的Hero
+		if (hero.isLivable) {
+			this.drawTank(hero.getX(), hero.getY(), g, hero.getDirection(),1 );
+		}else{
+			//等待炸弹爆炸完成时候，再初始化Hero
+			if (this.repaintTimes>9) {
+				hero = new Hero(180, 340);
+				hero.setTankName("Hero坦克");
+				this.repaintTimes = 0;
+			}
+			this.repaintTimes++;
+		}
 		//画出子弹
 		if(hero.shots.size()>0)
 		{
@@ -83,7 +94,6 @@ class MPanel extends JPanel implements KeyListener,Runnable
 				}else hero.shots.remove(shot);
 			}
 		}
-		//System.out.println("刷新ing");
 		//画出炮弹
 		for (int i = 0; i < this.bombs.size(); i++) {
 			System.out.println(this.bombs.size());
@@ -112,6 +122,9 @@ class MPanel extends JPanel implements KeyListener,Runnable
 				this.drawTank(tank.getX(), tank.getY(), g, tank.getDirection(), 0);
 				for (int j = 0; j < tank.shots.size(); j++) {
 					Shot shot = tank.shots.get(j);
+					//判断敌人是否击中hero
+					this.isHitTank(shot, this.hero);
+					//如果击中hero，击中了的子弹就不用绘制了
 					if (shot.isLivable && shot != null) {
 						g.fillOval(shot.getX(), shot.getY(), 2, 2);
 					}
@@ -189,7 +202,7 @@ class MPanel extends JPanel implements KeyListener,Runnable
 		}
 	}
 	//判断一颗子弹和坦克是否相撞
-	public boolean isHitTank(Shot shot, EnemyTank tank)
+	public boolean isHitTank(Shot shot, Tank tank)
 	{
 		//判断
 		switch (tank.direction) {
