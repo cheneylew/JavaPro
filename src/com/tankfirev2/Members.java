@@ -115,11 +115,14 @@ class Hero extends Tank
 class EnemyTank extends Tank implements Runnable
 {
 	private int moveDirectionState;
+	Vector<Shot> shots = null;
+	int maxShot = 3;
 	public EnemyTank(int x, int y) {
 		super(x, y);
 		// TODO Auto-generated constructor stub
 		this.speed = 3;
 		this.moveDirectionState = (int)(Math.random()*4);
+		this.shots = new Vector<Shot>();
 	}
 	
 	public int getMoveDirectionState() {
@@ -129,52 +132,97 @@ class EnemyTank extends Tank implements Runnable
 	public void setMoveDirectionState(int moveDirectionState) {
 		this.moveDirectionState = moveDirectionState;
 	}
-
+	public void shotEnemy(){
+		if(this.shots.size()>this.maxShot)
+		{
+			//System.out.println(this.shots.size());
+			this.shots.removeAllElements();
+			return;
+		}
+		Shot shot = null;
+		switch (this.direction) {
+		case Tank.DirectionTop:
+			shot = new Shot(this.x+9, this.y, Tank.DirectionTop);
+			break;
+		case Tank.DirectionRight:
+			shot = new Shot(this.x+29, this.y+8, Tank.DirectionRight);
+			break;
+		case Tank.DirectionBottom:
+			shot = new Shot(this.x+8, this.y+29, Tank.DirectionBottom);
+			break;
+		case Tank.DirectionLeft:
+			shot = new Shot(this.x, this.y+8, Tank.DirectionLeft);
+			break;
+		default:
+			break;
+		}
+		Thread tr = new Thread(shot);
+		tr.start();
+		this.shots.add(shot);
+	}
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
 		while(true){
+			m:
 			switch (this.moveDirectionState) {
 			case 0:
-				this.moveUp();
+				for (int i = 0; i < 30; i++) {
+					if(this.y>0){
+						this.moveUp();
+					}
+					try {
+						Thread.sleep(50);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+				}
 				break;
 			case 1:
-				this.moveRight();
+				for (int i = 0; i < 30; i++) {
+					if(this.x<370){
+						this.moveRight();
+					}
+					try {
+						Thread.sleep(50);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 				break;
 			case 2:
-				this.moveDown();
+				for (int i = 0; i < 30; i++) {
+					if(this.y<370){
+						this.moveDown();
+					}
+					try {
+						Thread.sleep(50);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 				
 				break;
 			case 3:
-				this.moveLeft();
+				for (int i = 0; i < 30; i++) {
+					if(this.x>0){
+						this.moveLeft();
+					}
+					try {
+						Thread.sleep(50);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 				break;
-					
-			default:
-				break;
 			}
-			
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			if(this.x<=0){
-				int a[]={0,1,2};
-				this.moveDirectionState = Tools.GetNum(a);
-			}
-			if(this.x>=370){
-				int a[]={0,2,3};
-				this.moveDirectionState = Tools.GetNum(a);
-			}
-			if(this.y<=0){
-				int a[]={1,2,3};
-				this.moveDirectionState = Tools.GetNum(a);
-			}
-			if(this.y>=340){
-				int a[]={0,1,3};
-				this.moveDirectionState = Tools.GetNum(a);
-			}
+			this.shotEnemy();
+			this.moveDirectionState = (int)(Math.random()*4);
 			if(this.isLivable == false){
 				System.out.println("清除敌人坦克的僵尸进程！");
 				break;

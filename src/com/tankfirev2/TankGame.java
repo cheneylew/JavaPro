@@ -80,7 +80,7 @@ class MPanel extends JPanel implements KeyListener,Runnable
 				if(shot!=null && shot.isLivable==true)
 				{
 					g.fillOval(shot.getX(), shot.getY(), 2, 2);
-				}
+				}else hero.shots.remove(shot);
 			}
 		}
 		//System.out.println("刷新ing");
@@ -104,14 +104,20 @@ class MPanel extends JPanel implements KeyListener,Runnable
 			
 		}
 		//在画出敌人坦克之前，判断有没有和其它坦克相碰撞，若是碰撞，则调头
-		this.enemyTankHits();
+		//this.enemyTankHits();
 		//画出敌人Tank
 		for (int i = 0; i < enemyTanks.size(); i++) {
 			EnemyTank tank = enemyTanks.get(i);
 			if (tank.isLivable) {
 				this.drawTank(tank.getX(), tank.getY(), g, tank.getDirection(), 0);
+				for (int j = 0; j < tank.shots.size(); j++) {
+					Shot shot = tank.shots.get(j);
+					if (shot.isLivable && shot != null) {
+						g.fillOval(shot.getX(), shot.getY(), 2, 2);
+					}
+				}
 			}else{
-				//this.enemyTanks.remove(tank);
+				this.enemyTanks.remove(tank);
 			}
 		}
 		
