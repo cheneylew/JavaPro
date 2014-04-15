@@ -50,6 +50,7 @@ class MPanel extends JPanel implements KeyListener,Runnable
 		
 		for (int i = 0; i < enemySize; i++) {
 			EnemyTank oneTank = new EnemyTank(10+i*170, 10);
+			oneTank.setTanks(enemyTanks);//让敌人坦克知道敌人的所有坦克情况
 			oneTank.setTankName("敌人坦克"+i);
 			enemyTanks.add(oneTank);
 			Thread tr = new Thread(oneTank);

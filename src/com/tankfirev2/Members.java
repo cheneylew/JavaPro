@@ -83,6 +83,7 @@ class Hero extends Tank
 		this.shots = new Vector<Shot>();
 		
 	}
+
 	public void shotEnemy(){
 		if(this.shots.size()>this.maxShot)
 		{
@@ -116,6 +117,7 @@ class EnemyTank extends Tank implements Runnable
 {
 	Vector<Shot> shots = null;
 	int maxShot = 3;
+	Vector<EnemyTank> tanks = new Vector<EnemyTank>();
 	public EnemyTank(int x, int y) {
 		super(x, y);
 		// TODO Auto-generated constructor stub
@@ -123,7 +125,110 @@ class EnemyTank extends Tank implements Runnable
 		this.direction = (int)(Math.random()*4);
 		this.shots = new Vector<Shot>();
 	}
-	
+	public void setTanks(Vector<EnemyTank> enemyTanks) {
+		this.tanks = enemyTanks;
+	}
+	public boolean isTouchOtherEnemy(){
+		boolean isTouched = false;
+		switch (this.direction) {
+		case Tank.DirectionTop:
+			for (int i = 0; i < this.tanks.size(); i++) {
+				EnemyTank et = this.tanks.get(i);
+				if (et!=this) {
+					if (et.direction == Tank.DirectionTop || et.direction == Tank.DirectionBottom) {
+						if (this.x>=et.x && this.x<=et.x+20 && this.y>=et.y && this.y<=et.y+30) {
+							isTouched = true;
+						}
+						if (this.x+20>=et.x && this.x+20<=et.x+20 && this.y>=et.y && this.y<=et.y+30){
+							isTouched = true;
+						}
+					}
+					if (et.direction == Tank.DirectionRight || et.direction == Tank.DirectionLeft){
+						if (this.x>=et.x && this.x<=et.x+30 && this.y>=et.y && this.y<=et.y+20) {
+							isTouched = true;
+						}
+						if (this.x+20>=et.x && this.x+20<=et.x+30 && this.y>=et.y && this.y<=et.y+20){
+							isTouched = true;
+						}
+					}
+				}
+			}
+			break;
+		case Tank.DirectionRight:
+			for (int i = 0; i < this.tanks.size(); i++) {
+				EnemyTank et = this.tanks.get(i);
+				if (et!=this) {
+					if (et.direction == Tank.DirectionTop || et.direction == Tank.DirectionBottom) {
+						if (this.x+30>=et.x && this.x+30<=et.x+20 && this.y>=et.y && this.y<=et.y+30) {
+							isTouched = true;
+						}
+						if (this.x+30>=et.x && this.x+30<=et.x+20 && this.y+20>=et.y && this.y+20<=et.y+30){
+							isTouched = true;
+						}
+					}
+					if (et.direction == Tank.DirectionRight || et.direction == Tank.DirectionLeft){
+						if (this.x+30>=et.x && this.x+30<=et.x+30 && this.y>=et.y && this.y<=et.y+20) {
+							isTouched = true;
+						}
+						if (this.x+30>=et.x && this.x+30<=et.x+30 && this.y+20>=et.y && this.y+20<=et.y+20){
+							isTouched = true;
+						}
+					}
+				}
+			}
+			break;
+		case Tank.DirectionBottom:
+			for (int i = 0; i < this.tanks.size(); i++) {
+				EnemyTank et = this.tanks.get(i);
+				if (et!=this) {
+					if (et.direction == Tank.DirectionTop || et.direction == Tank.DirectionBottom) {
+						if (this.x>=et.x && this.x<=et.x+20 && this.y+30>=et.y && this.y+30<=et.y+30) {
+							isTouched = true;
+						}
+						if (this.x+20>=et.x && this.x+20<=et.x+20 && this.y+30>=et.y && this.y+30<=et.y+30){
+							isTouched = true;
+						}
+					}
+					if (et.direction == Tank.DirectionRight || et.direction == Tank.DirectionLeft){
+						if (this.x>=et.x && this.x<=et.x+30 && this.y+30>=et.y && this.y+30<=et.y+20) {
+							isTouched = true;
+						}
+						if (this.x+20>=et.x && this.x+30<=et.x+20 && this.y+30>=et.y && this.y+30<=et.y+20){
+							isTouched = true;
+						}
+					}
+				}
+			}
+			break;
+		case Tank.DirectionLeft:
+			for (int i = 0; i < this.tanks.size(); i++) {
+				EnemyTank et = this.tanks.get(i);
+				if (et!=this) {
+					if (et.direction == Tank.DirectionTop || et.direction == Tank.DirectionBottom) {
+						if (this.x>=et.x && this.x<=et.x+20 && this.y>=et.y && this.y<=et.y+30) {
+							isTouched = true;
+						}
+						if (this.x>=et.x && this.x<=et.x+20 && this.y+20>=et.y && this.y+20<=et.y+30){
+							isTouched = true;
+						}
+					}
+					if (et.direction == Tank.DirectionRight || et.direction == Tank.DirectionLeft){
+						if (this.x>=et.x && this.x<=et.x+30 && this.y>=et.y && this.y<=et.y+20) {
+							isTouched = true;
+						}
+						if (this.x>=et.x && this.x<=et.x+30 && this.y+20>=et.y && this.y+20<=et.y+20){
+							isTouched = true;
+						}
+					}
+				}
+			}
+			break;
+
+		default:
+			break;
+		}
+		return isTouched;
+	}
 	public void shotEnemy(){
 		if(this.shots.size()>this.maxShot)
 		{
@@ -156,11 +261,10 @@ class EnemyTank extends Tank implements Runnable
 	public void run() {
 		// TODO Auto-generated method stub
 		while(true){
-			m:
 			switch (this.direction) {
 			case 0:
 				for (int i = 0; i < 30; i++) {
-					if(this.y>0){
+					if(this.y>0 && !this.isTouchOtherEnemy()){
 						this.moveUp();
 					}
 					try {
@@ -174,7 +278,7 @@ class EnemyTank extends Tank implements Runnable
 				break;
 			case 1:
 				for (int i = 0; i < 30; i++) {
-					if(this.x<370){
+					if(this.x<370 && !this.isTouchOtherEnemy()){
 						this.moveRight();
 					}
 					try {
@@ -187,7 +291,7 @@ class EnemyTank extends Tank implements Runnable
 				break;
 			case 2:
 				for (int i = 0; i < 30; i++) {
-					if(this.y<370){
+					if(this.y<370 && !this.isTouchOtherEnemy()){
 						this.moveDown();
 					}
 					try {
@@ -201,7 +305,7 @@ class EnemyTank extends Tank implements Runnable
 				break;
 			case 3:
 				for (int i = 0; i < 30; i++) {
-					if(this.x>0){
+					if(this.x>0 && !this.isTouchOtherEnemy()){
 						this.moveLeft();
 					}
 					try {
