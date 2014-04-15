@@ -114,24 +114,16 @@ class Hero extends Tank
 
 class EnemyTank extends Tank implements Runnable
 {
-	private int moveDirectionState;
 	Vector<Shot> shots = null;
 	int maxShot = 3;
 	public EnemyTank(int x, int y) {
 		super(x, y);
 		// TODO Auto-generated constructor stub
 		this.speed = 3;
-		this.moveDirectionState = (int)(Math.random()*4);
+		this.direction = (int)(Math.random()*4);
 		this.shots = new Vector<Shot>();
 	}
 	
-	public int getMoveDirectionState() {
-		return moveDirectionState;
-	}
-
-	public void setMoveDirectionState(int moveDirectionState) {
-		this.moveDirectionState = moveDirectionState;
-	}
 	public void shotEnemy(){
 		if(this.shots.size()>this.maxShot)
 		{
@@ -165,7 +157,7 @@ class EnemyTank extends Tank implements Runnable
 		// TODO Auto-generated method stub
 		while(true){
 			m:
-			switch (this.moveDirectionState) {
+			switch (this.direction) {
 			case 0:
 				for (int i = 0; i < 30; i++) {
 					if(this.y>0){
@@ -222,7 +214,7 @@ class EnemyTank extends Tank implements Runnable
 				break;
 			}
 			this.shotEnemy();
-			this.moveDirectionState = (int)(Math.random()*4);
+			this.direction = (int)(Math.random()*4);
 			if(this.isLivable == false){
 				System.out.println("清除敌人坦克的僵尸进程！");
 				break;
