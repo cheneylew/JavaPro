@@ -229,66 +229,6 @@ class EnemyTank extends Tank implements Runnable
 			}
 		}
 	}
-	public void checkHitTanks(Vector<Tank> tanks){
-		
-		for (int i = 0; i < tanks.size(); i++) {
-			Tank tank = tanks.get(i);
-			if(tank!=this){
-				this.checkHitOneTank(tank);
-			}
-		}
-	}
-	private void checkHitOneTank(Tank tank){
-		//System.out.println(tank.getTankName());
-		switch (this.moveDirectionState) {
-			case Tank.DirectionTop:
-				if(tank.direction == Tank.DirectionTop || tank.direction == Tank.DirectionBottom){
-					if (this.x>tank.getX()-20 && this.x<tank.getX()+20 && (this.y-tank.getY())>30) {
-						this.moveDirectionState = Tank.DirectionBottom;
-					}
-				}else{
-					if (this.x>tank.getX()-30 && this.x<tank.getX()+30 && (this.y-tank.getY())>30) {
-						this.moveDirectionState = Tank.DirectionBottom;
-					}
-				}
-				break;
-			case Tank.DirectionBottom:
-				if(tank.direction == Tank.DirectionTop || tank.direction == Tank.DirectionBottom){
-					if (this.x>tank.getX()-20 && this.x<tank.getX()+20 && Math.abs(this.y-tank.getY())<30) {
-						this.moveDirectionState = Tank.DirectionTop;
-					}
-				}else{
-					if (this.x>tank.getX()-30 && this.x<tank.getX()+30 && Math.abs(this.y-tank.getY())<30) {
-						this.moveDirectionState = Tank.DirectionTop;
-						System.out.println(this.moveDirectionState);
-					}
-				}
-				
-				break;
-			case Tank.DirectionRight:
-				if(tank.direction == Tank.DirectionRight || tank.direction == Tank.DirectionLeft){
-					if (this.y>tank.getY()-20 && this.x<tank.getY()+20 && Math.abs(this.x-tank.getX())<30) {
-						this.moveDirectionState = Tank.DirectionLeft;
-					}
-				}else{
-					if (this.y>tank.getY()-30 && this.x<tank.getY()+30 && Math.abs(this.x-tank.getX())<30) {
-						this.moveDirectionState = Tank.DirectionLeft;
-					}
-				}
-				break;
-			case Tank.DirectionLeft:
-				if(tank.direction == Tank.DirectionRight || tank.direction == Tank.DirectionLeft){
-					if (this.y>tank.getY()-20 && this.x<tank.getY()+20 && Math.abs(this.x-tank.getX())<30) {
-						this.moveDirectionState = Tank.DirectionRight;
-					}
-				}else{
-					if (this.y>tank.getY()-30 && this.x<tank.getY()+30 && Math.abs(this.x-tank.getX())<30) {
-						this.moveDirectionState = Tank.DirectionRight;
-					}
-				}
-				break;
-		}
-	}
 }
 
 class Shot implements Runnable

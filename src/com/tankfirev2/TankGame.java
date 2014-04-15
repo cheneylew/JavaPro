@@ -113,8 +113,6 @@ class MPanel extends JPanel implements KeyListener,Runnable
 			}else this.bombs.remove(bomb);
 			
 		}
-		//在画出敌人坦克之前，判断有没有和其它坦克相碰撞，若是碰撞，则调头
-		//this.enemyTankHits();
 		//画出敌人Tank
 		for (int i = 0; i < enemyTanks.size(); i++) {
 			EnemyTank tank = enemyTanks.get(i);
@@ -233,17 +231,6 @@ class MPanel extends JPanel implements KeyListener,Runnable
 			break;
 		}
 		return false;
-	}
-	public void enemyTankHits()
-	{
-		//判断
-		Vector<Tank> tanks= new Vector<Tank>();
-		tanks.addAll(this.enemyTanks);
-		tanks.add(this.hero);
-		for (int i = 0; i < enemyTanks.size(); i++) {
-			EnemyTank enemyTank = enemyTanks.get(i);
-			enemyTank.checkHitTanks(tanks);
-		}
 	}
 
 	@Override
