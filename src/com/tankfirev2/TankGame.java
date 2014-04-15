@@ -5,18 +5,45 @@ import java.awt.event.*;
 import java.awt.*;
 import java.util.*;
 
-public class TankGame extends JFrame {
+public class TankGame extends JFrame implements ActionListener {
 	MPanel myPanel = null;
+	JMenuBar jmb;
+	JMenu jm;
+	JMenuItem jmi1,jmi2,jmi3,jmi4;
+	Stage stage;
 	public TankGame() {
-		// TODO Auto-generated constructor stub
-		myPanel = new MPanel();
-		myPanel.setBackground(Color.black);
-		this.add(myPanel);
-		Thread tr = new Thread(myPanel);
-		tr.start();
+		jmb = new JMenuBar();
+		this.setJMenuBar(jmb);
+		jm = new JMenu("菜单");
+		jmb.add(jm);
 		
-		//JFrame事件源
-		this.addKeyListener(myPanel);
+		jmi1 = new JMenuItem("开始游戏");
+		jmi1.addActionListener(this);
+		jmi1.setActionCommand("start");
+		
+		jmi2 = new JMenuItem("暂停游戏");
+		jmi2.addActionListener(this);
+		jmi2.setActionCommand("parse");
+		
+		jmi3 = new JMenuItem("存盘退出");
+		jmi3.addActionListener(this);
+		jmi3.setActionCommand("saveExit");
+		
+		jmi4 = new JMenuItem("退出");
+		jmi4.addActionListener(this);
+		jmi4.setActionCommand("exit");
+		
+		
+		jm.add(jmi1);
+		jm.add(jmi2);
+		jm.add(jmi3);
+		jm.add(jmi4);
+		
+		stage = new Stage();
+		stage.setBackground(Color.BLACK);
+		Thread t = new Thread(stage);
+		t.start();
+		this.add(stage);
 		
 		this.setSize(400, 430);
 		this.setLocation(600, 200);
@@ -30,10 +57,71 @@ public class TankGame extends JFrame {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		TankGame tankGame = new TankGame();
+		new TankGame();
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getActionCommand().equals("start")) {
+			//移除启动游戏界面
+			this.remove(this.stage);
+			//添加开始游戏界面
+			myPanel = new MPanel();
+			myPanel.setBackground(Color.black);
+			myPanel.setVisible(true);
+			this.add(myPanel);
+			//JFrame事件源
+			this.addKeyListener(myPanel);
+			Thread tr = new Thread(myPanel);
+			tr.start();
+		}
+		else if (e.getActionCommand().equals("parse")) {
+			System.out.println("1");
+			
+		}
+		else if (e.getActionCommand().equals("saveExit")) {
+			System.out.println("2");
+			
+		}
+		else if (e.getActionCommand().equals("exit")) {
+			System.out.println("3");
+			System.exit(0);
+			
+		}
+		
 	}
 
 }
+
+class Stage extends JPanel implements Runnable
+{
+
+	@Override
+	public void paint(Graphics g) {
+		// TODO Auto-generated method stub
+		super.paint(g);
+		g.setFont(new Font("华文新魏", Font.BOLD, 30));
+		g.setColor(Color.yellow);
+		g.drawString("第一关", 150, 180);
+	}
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		while (true) {
+			try {
+				Thread.sleep(50);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			this.repaint();
+		}
+		
+	}
+	
+}
+
 
 class MPanel extends JPanel implements KeyListener,Runnable
 {
