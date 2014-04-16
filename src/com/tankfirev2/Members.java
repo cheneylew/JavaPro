@@ -116,7 +116,7 @@ class Hero extends Tank
 class EnemyTank extends Tank implements Runnable
 {
 	Vector<Shot> shots = null;
-	int maxShot = 3;
+	int maxShot = 8;
 	Vector<EnemyTank> tanks = new Vector<EnemyTank>();
 	public EnemyTank(int x, int y) {
 		super(x, y);
@@ -264,6 +264,10 @@ class EnemyTank extends Tank implements Runnable
 			switch (this.direction) {
 			case 0:
 				for (int i = 0; i < 30; i++) {
+					//连发两颗子弹
+					if(i%20==1 || i%20==3){
+						this.shotEnemy();
+					}
 					if(this.y>0 && !this.isTouchOtherEnemy()){
 						this.moveUp();
 					}
@@ -278,6 +282,10 @@ class EnemyTank extends Tank implements Runnable
 				break;
 			case 1:
 				for (int i = 0; i < 30; i++) {
+					//连发两颗子弹
+					if(i%20==1 || i%20==3){
+						this.shotEnemy();
+					}
 					if(this.x<370 && !this.isTouchOtherEnemy()){
 						this.moveRight();
 					}
@@ -291,6 +299,10 @@ class EnemyTank extends Tank implements Runnable
 				break;
 			case 2:
 				for (int i = 0; i < 30; i++) {
+					//连发两颗子弹
+					if(i%20==1 || i%20==3){
+						this.shotEnemy();
+					}
 					if(this.y<370 && !this.isTouchOtherEnemy()){
 						this.moveDown();
 					}
@@ -305,6 +317,10 @@ class EnemyTank extends Tank implements Runnable
 				break;
 			case 3:
 				for (int i = 0; i < 30; i++) {
+					//连发两颗子弹
+					if(i%20==1 || i%20==3){
+						this.shotEnemy();
+					}
 					if(this.x>0 && !this.isTouchOtherEnemy()){
 						this.moveLeft();
 					}
@@ -317,7 +333,6 @@ class EnemyTank extends Tank implements Runnable
 				}
 				break;
 			}
-			this.shotEnemy();
 			this.direction = (int)(Math.random()*4);
 			if(this.isLivable == false){
 				System.out.println("清除敌人坦克的僵尸进程！");

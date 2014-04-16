@@ -5,18 +5,23 @@ import java.awt.event.*;
 import java.awt.*;
 import java.util.*;
 
-public class TankGame extends JFrame {
+public class TankGame extends JFrame implements ActionListener {
 	MPanel myPanel = null;
+	JMenuBar jmb;
+	JMenu jm;
+	JMenuItem jmi;
+	GameStage gs;
+	Thread gsthread;
+	
 	public TankGame() {
 		// TODO Auto-generated constructor stub
-		myPanel = new MPanel();
-		myPanel.setBackground(Color.black);
-		this.add(myPanel);
-		Thread tr = new Thread(myPanel);
-		tr.start();
-		
-		//JFrame事件源
-		this.addKeyListener(myPanel);
+		this.initMenu();
+
+		gs = new GameStage();
+		gs.setBackground(Color.BLACK);
+		gsthread = new Thread(gs);
+		gsthread.start();
+		this.add(gs);
 		
 		this.setSize(400, 430);
 		this.setLocation(600, 200);
@@ -24,7 +29,18 @@ public class TankGame extends JFrame {
 		this.setVisible(true);
 		this.setResizable(false);
 	}
-
+	public void initMenu(){
+		jmb = new JMenuBar();
+		jm = new JMenu("游戏菜单");
+		jmi = new JMenuItem("开始游戏");
+		jmi.addActionListener(this);
+		jmi.setActionCommand("beginGame");
+		jm.add(jmi);
+		jmb.add(jm);
+		
+		this.setJMenuBar(jmb);
+		
+	}
 	/**
 	 * @param args
 	 */
@@ -32,7 +48,57 @@ public class TankGame extends JFrame {
 		// TODO Auto-generated method stub
 		TankGame tankGame = new TankGame();
 	}
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		if (e.getActionCommand().equals("beginGame")) {
+			//关闭关卡
+			this.gsthread.stop();
+			this.remove(gs);
+			//进入游戏
+			myPanel = new MPanel();
+			myPanel.setBackground(Color.black);
+			this.add(myPanel);
+			Thread tr = new Thread(myPanel);
+			tr.start();
+			this.addKeyListener(myPanel);
+			//显示游戏界面Frame
+			this.setVisible(true);
+		}
+	}
 
+}
+
+class GameStage extends JPanel implements Runnable
+{
+	int times = 0;
+	@Override
+	public void paint(Graphics g) {
+		// TODO Auto-generated method stub
+		super.paint(g);
+		if (this.times%10==1 || this.times%10==5) {
+			Font font = new Font("华文新魏", Font.BOLD, 30);
+			g.setColor(Color.GREEN);
+			g.setFont(font);
+			g.drawString("第一关", 150, 180);
+		}
+	}
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		while (true) {
+			try {
+				Thread.sleep(20);
+			} catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
+			}
+			this.times++;
+			this.repaint();
+		}
+	}
+	
 }
 
 class MPanel extends JPanel implements KeyListener,Runnable
@@ -40,7 +106,7 @@ class MPanel extends JPanel implements KeyListener,Runnable
 	Hero hero = null;
 	int repaintTimes = 0;
 	Vector<EnemyTank> enemyTanks = new Vector<EnemyTank>();
-	int enemySize = 3;
+	int enemySize = 10;
 	Image image1,image2,image3;
 	Vector<Bomb> bombs = new Vector<Bomb>();
 	public MPanel() {
@@ -49,7 +115,7 @@ class MPanel extends JPanel implements KeyListener,Runnable
 		hero.setTankName("Hero坦克");
 		
 		for (int i = 0; i < enemySize; i++) {
-			EnemyTank oneTank = new EnemyTank(10+i*170, 10);
+			EnemyTank oneTank = new EnemyTank(10+i*40, 10);
 			oneTank.setTanks(enemyTanks);//让敌人坦克知道敌人的所有坦克情况
 			oneTank.setTankName("敌人坦克"+i);
 			enemyTanks.add(oneTank);
