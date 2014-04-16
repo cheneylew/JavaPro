@@ -9,9 +9,14 @@ public class TankGame extends JFrame implements ActionListener {
 	MPanel myPanel = null;
 	JMenuBar jmb;
 	JMenu jm;
-	JMenuItem jmi;
+	JMenuItem jmi,jmi1,jmi2;
 	GameStage gs;
 	Thread gsthread;
+	
+	int keepEnemySpeed;
+	int keepEnemyShotSpeed;
+	int keepHeroSpeed;
+	int keepHeroShotSpeed;
 	
 	public TankGame() {
 		// TODO Auto-generated constructor stub
@@ -32,10 +37,22 @@ public class TankGame extends JFrame implements ActionListener {
 	public void initMenu(){
 		jmb = new JMenuBar();
 		jm = new JMenu("游戏菜单");
+		
 		jmi = new JMenuItem("开始游戏");
 		jmi.addActionListener(this);
 		jmi.setActionCommand("beginGame");
 		jm.add(jmi);
+		
+		jmi1 = new JMenuItem("暂停");
+		jmi1.addActionListener(this);
+		jmi1.setActionCommand("parse");
+		jm.add(jmi1);
+		
+		jmi2 = new JMenuItem("继续");
+		jmi2.addActionListener(this);
+		jmi2.setActionCommand("continue");
+		jm.add(jmi2);
+		
 		jmb.add(jm);
 		
 		this.setJMenuBar(jmb);
@@ -46,7 +63,7 @@ public class TankGame extends JFrame implements ActionListener {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		TankGame tankGame = new TankGame();
+		new TankGame();
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -65,6 +82,39 @@ public class TankGame extends JFrame implements ActionListener {
 			//显示游戏界面Frame
 			this.setVisible(true);
 		}
+		else if (e.getActionCommand().equals("parse")) {
+			Vector<EnemyTank> ets= this.myPanel.getEnemyTanks();
+			for (int i = 0; i < ets.size(); i++) {
+				EnemyTank et = ets.get(i);
+				//先保存敌人坦克速度
+				this.keepEnemySpeed =et.speed;
+				//设置敌人速度为零
+				et.speed = 0;
+				for (int j = 0; j < et.shots.size(); j++) {
+					Shot shot = et.shots.get(j);
+					//保存子弹速度
+					this.keepEnemyShotSpeed = shot.speed;
+					//子弹速度为0
+					shot.speed = 0;
+				}
+			}
+		}
+		else if (e.getActionCommand().equals("continue")) {
+			if (this.keepEnemySpeed!=0 && this.keepEnemyShotSpeed!=0) {
+				Vector<EnemyTank> ets= this.myPanel.getEnemyTanks();
+				for (int i = 0; i < ets.size(); i++) {
+					EnemyTank et = ets.get(i);
+					//恢复速度
+					et.speed = this.keepEnemySpeed;
+					for (int j = 0; j < et.shots.size(); j++) {
+						Shot shot = et.shots.get(j);
+						//子弹速度为0
+						shot.speed = this.keepEnemyShotSpeed;
+					}
+				}
+			}
+		}
+		
 	}
 
 }
@@ -76,7 +126,7 @@ class GameStage extends JPanel implements Runnable
 	public void paint(Graphics g) {
 		// TODO Auto-generated method stub
 		super.paint(g);
-		if (this.times%10==1 || this.times%10==5) {
+		if (this.times%10!=1 || this.times%10!=5) {
 			Font font = new Font("华文新魏", Font.BOLD, 30);
 			g.setColor(Color.GREEN);
 			g.setFont(font);
@@ -126,6 +176,22 @@ class MPanel extends JPanel implements KeyListener,Runnable
 		this.image1 = Toolkit.getDefaultToolkit().getImage(Panel.class.getResource("/bomb_1.gif"));
 		this.image2 = Toolkit.getDefaultToolkit().getImage(Panel.class.getResource("/bomb_2.gif"));
 		this.image3 = Toolkit.getDefaultToolkit().getImage(Panel.class.getResource("/bomb_3.gif"));
+	}
+	
+	public Hero getHero() {
+		return hero;
+	}
+
+	public void setHero(Hero hero) {
+		this.hero = hero;
+	}
+
+	public Vector<EnemyTank> getEnemyTanks() {
+		return enemyTanks;
+	}
+
+	public void setEnemyTanks(Vector<EnemyTank> enemyTanks) {
+		this.enemyTanks = enemyTanks;
 	}
 
 	public void paint(Graphics g) {
